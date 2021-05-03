@@ -1,0 +1,69 @@
+extends base
+
+block content
+  .row 
+    .col-12.py-5
+      #container_loading
+        .d-flex.justify-content-center.align-items-center.text-primary
+          .spinner-border(role='status')
+            span.visually-hidden Loading...
+          h5.ms-2.mb-0 Loading...
+      .table-responsive-md 
+        table#table_logs.table
+          //- thead 
+          //-   tr 
+          //-     th ID 
+          //-     th Type 
+          //-     th Status
+          //-     th Document Type 
+          //-     th Process Time 
+          //-     th &nbsp;
+  #mailModal.modal.fade(tabindex='-1' aria-labelledby='mailModalLabel' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h5#mailModalLabel.modal-title
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          | ...
+        .modal-footer.d-flex.justify-content-center
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+  #smsModal.modal.fade(tabindex='-1' aria-labelledby='smsModalLabel' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h5#smsModalLabel.modal-title
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body.px-4
+          .list-info
+            dl.row.list-item
+              dt.col-sm-5.list-info-label ID
+              dd.col-sm-7.list-info-item(data-sms-field='id') 
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Document Type
+              dd.col-sm-7.list-info-item(data-sms-field='documentType') 
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Status
+              dd.col-sm-7.list-info-item(data-sms-field='status') 
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Date
+              dd.col-sm-7.list-info-item(data-sms-field='processDateTime') 
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Timezone
+              dd.col-sm-7.list-info-item(data-sms-field='timeZone') 
+          .card
+            .card-body 
+              dl.row.list-item
+                dt.col-sm-7.list-info-label Mobile Country Code
+                dd.col-sm-5.list-info-item(data-sms-field='mobileCountryCode' data-sms-mobile-field='true') 
+              dl.row.list-item
+                dt.col-sm-7.list-info-label Mobile Operator Code
+                dd.col-sm-5.list-info-item(data-sms-field='mobileOperatorCode' data-sms-mobile-field='true') 
+              dl.row.list-item
+                dt.col-sm-7.list-info-label Mobile Number
+                dd.col-sm-5.list-info-item(data-sms-field='mobileNumber' data-sms-mobile-field='true') 
+              #smsContent
+        .modal-footer.d-flex.justify-content-center
+          button.btn.btn-danger(type='button' data-bs-dismiss='modal') Close
+append scripts
+  script(src="/assets/js/index.js")
