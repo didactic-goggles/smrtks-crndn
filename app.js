@@ -13,6 +13,7 @@ const cors = require('cors');
 // const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const viewRouter = require('./routes/viewRoutes');
+const apiRouter = require('./routes/apiRoutes');
 
 const app = express();
 
@@ -73,7 +74,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/api', apiRouter);
 app.use('/', viewRouter);
+
 app.locals.moment = require('moment');
 
 app.use(globalErrorHandler);

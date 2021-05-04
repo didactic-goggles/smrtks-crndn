@@ -6,10 +6,12 @@ const apiController = require('../controllers/apiController');
 const router = express.Router();
 //router.use(authController.isLoggedIn);
 
-router.get('/logs', viewsController.getLogs);
+// begin:: API
+router.get('/logs', apiController.getLogs);
 
-router.get('/permissions', viewsController.getPermissions);
+router.get('/permissions', apiController.getPermissions);
 
+// end:: API
 router.get('*', viewsController.get404);
 
 module.exports = router;

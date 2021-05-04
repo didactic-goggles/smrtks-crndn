@@ -1,5 +1,5 @@
-let datatableLog;
-const Index = (() => {
+const Logs = (() => {
+  let datatableLog;
   const loadingContainer = document.querySelector('#container_loading');
   const filtersContainer = document.querySelector('.filters');
   // MODALS
@@ -10,7 +10,7 @@ const Index = (() => {
 
   const initLogsTable = async () => {
     const logsTable = document.querySelector('#table_logs');
-    const logsRequest = await fetch('/logs');
+    const logsRequest = await fetch('/api/logs');
     const logsJSON = await logsRequest.json();
     const logs = logsJSON.data;
     const columns = [
@@ -184,5 +184,5 @@ const Index = (() => {
 })();
 
 $(() => {
-  Index.init();
+  Logs.init();
 });
