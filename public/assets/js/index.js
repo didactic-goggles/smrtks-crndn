@@ -1,7 +1,7 @@
+let datatableLog;
 const Index = (() => {
-  let datatableLog;
   const loadingContainer = document.querySelector('#container_loading');
-
+  const filtersContainer = document.querySelector('.filters');
   // MODALS
   const mailModalElem = document.getElementById('mailModal');
   const mailModal = new bootstrap.Modal(mailModalElem);
@@ -56,9 +56,20 @@ const Index = (() => {
             `${moment(data, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')}`,
         },
         {
+          targets: columns.findIndex((c) => c.field === 'outType'),
+          render: (data) =>
+            `<span client-data="${data}" class="badge bg-${
+              data === 'EMAIL' ? 'primary' : 'secondary'
+            } fw-bold rounded-pill py-2 px-3">${
+              data === 'EMAIL'
+                ? '<i class="bi bi-envelope me-2"></i>'
+                : '<i class="bi bi-chat-square me-2"></i>'
+            }${data === 'EMAIL' ? 'Email' : 'Sms'}</span>`,
+        },
+        {
           targets: columns.findIndex((c) => c.field === 'status'),
           render: (data) =>
-            `<span class="badge bg-${
+            `<span client-data="${data}" class="badge bg-${
               data === 'SUCCESSFULLY' ? 'success' : 'danger'
             } fw-bold rounded-pill py-2 px-3">${
               data === 'SUCCESSFULLY' ? 'Success' : 'Inactive'
@@ -76,7 +87,7 @@ const Index = (() => {
       ],
     });
     loadingContainer.classList.add('d-none');
-
+    filtersContainer.classList.remove('d-none');
     // last cell event
     $('#table_logs tbody').on('click', 'tr td:last-child', (e) => {
       const cell = e.target;
@@ -89,37 +100,81 @@ const Index = (() => {
       targetModalContainer.querySelector(
         '.modal-title'
       ).innerHTML = `${cellData.id} - Details`;
-
-      if (isEmail) {
-      } else {
-          // fill sms info list
-          [...targetModalContainer.querySelectorAll('.list-info-item')].forEach(smsListItem => {
-            const smsInfoFieldType = smsListItem.getAttribute('data-sms-field');
-            if (smsListItem.getAttribute('data-sms-mobile-field') === 'true') {
-                smsListItem.innerHTML = cellData.outputSmsList[0][smsInfoFieldType];
+      // fill sms info list
+      [...targetModalContainer.querySelectorAll('.list-info-item')].forEach(
+        (listItem) => {
+          const infoFieldType = listItem.getAttribute('data-log-field');
+          if (isEmail) {
+            targetModalContainer.querySelector(
+              '#attachmentListContent'
+            ).innerHTML =
+              cellData.outputEmailList[0].attachmentList[0].outputValue;
+            targetModalContainer.querySelector('#emailContent').innerHTML =
+              cellData.outputEmailList[0].body;
+          } else {
+            targetModalContainer.querySelector('#smsContent').innerHTML =
+              cellData.outputSmsList[0].message;
+          }
+          if (listItem.getAttribute('data-sms-mobile-field') === 'true') {
+            listItem.innerHTML = cellData.outputSmsList[0][infoFieldType];
+          } else if (
+            listItem.getAttribute('data-email-list-field') === 'true'
+          ) {
+            listItem.innerHTML = cellData.outputEmailList[0][infoFieldType];
+          } else {
+            if (infoFieldType === 'status') {
+              listItem.innerHTML = `<span class="badge bg-${
+                cellData[infoFieldType] === 'SUCCESSFULLY'
+                  ? 'success'
+                  : 'danger'
+              } fw-bold rounded-pill py-2 px-3">${
+                cellData[infoFieldType] === 'SUCCESSFULLY'
+                  ? 'Success'
+                  : 'Inactive'
+              }</span>`;
+            } else if (infoFieldType === 'processDateTime') {
+              listItem.innerHTML = moment(
+                cellData[infoFieldType],
+                'YYYY-MM-DDThh:mm:ss'
+              ).format('DD/MM/YYYY hh:mm:ss');
+            } else if (infoFieldType === 'outType') {
+              listItem.innerHTML = `<span class="badge bg-${
+                cellData[infoFieldType] === 'EMAIL' ? 'primary' : 'secondary'
+              } fw-bold rounded-pill py-2 px-3">${
+                cellData[infoFieldType] === 'EMAIL'
+                  ? '<i class="bi bi-envelope me-2"></i>'
+                  : '<i class="bi bi-chat-square me-2"></i>'
+              }${cellData[infoFieldType] === 'EMAIL' ? 'Email' : 'Sms'}</span>`;
             } else {
-                if (smsInfoFieldType === 'status') {
-                    smsListItem.innerHTML = `<span class="badge bg-${
-                        cellData[smsInfoFieldType] === 'SUCCESSFULLY' ? 'success' : 'danger'
-                      } fw-bold rounded-pill py-2 px-3">${
-                        cellData[smsInfoFieldType] === 'SUCCESSFULLY' ? 'Success' : 'Inactive'
-                      }</span>`
-                } else if(smsInfoFieldType === 'processDateTime') {
-                    smsListItem.innerHTML = moment(cellData[smsInfoFieldType], 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY hh:mm:ss');
-                } else {
-                    smsListItem.innerHTML = cellData[smsInfoFieldType];
-
-                }
+              listItem.innerHTML = cellData[infoFieldType];
             }
-          });
-          targetModalContainer.querySelector('#smsContent').innerHTML = cellData.outputSmsList[0].message;
-      }
-
+          }
+        }
+      );
       targetModal.show();
-      // if(cellData.outType === 'EMAIL') {
-
-      // }
     });
+
+    // Filters
+    [...document.querySelectorAll('.filters select')].forEach((selectElem) => {
+      $(selectElem).select2();
+      $(selectElem).on('select2:select', () =>
+        datatableLog
+          .column(columns.findIndex((c) => c.field === selectElem.name))
+          .search(selectElem.value, true, false)
+          .draw()
+      );
+      $(selectElem).on('select2:clear', () =>
+        datatableLog
+          .column(columns.findIndex((c) => c.field === selectElem.name))
+          .search(selectElem.value)
+          .draw()
+      );
+    });
+    // Search
+    const searchElem = document.querySelector('#filter_search');
+    searchElem.addEventListener('keyup', () =>
+      datatableLog.search(searchElem.value).draw()
+    );
   };
   return {
     init: () => {
@@ -131,21 +186,3 @@ const Index = (() => {
 $(() => {
   Index.init();
 });
-
-const addHeadersToTable = (table, columns) => {
-  const thead = document.createElement('thead');
-  const tr = document.createElement('tr');
-  tr.classList.add('fw-bold', 'fs-6', 'text-gray-800');
-  columns.forEach((column) => {
-    const th = document.createElement('th');
-    th.textContent = column.header;
-    th.style.whiteSpace = 'nowrap';
-    // if (column.classList) {
-    //   th.classList.add(...column.classList);
-    // } else th.classList.add('min-w-125px');
-    if (column.widthSet !== false) th.classList.add('min-w-125px');
-    tr.append(th);
-  });
-  thead.append(tr);
-  table.append(thead);
-};

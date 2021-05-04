@@ -3,11 +3,28 @@ extends base
 block content
   .row 
     .col-12.py-5
-      #container_loading
+      #container_loading.mb-3
         .d-flex.justify-content-center.align-items-center.text-primary
           .spinner-border(role='status')
             span.visually-hidden Loading...
           h5.ms-2.mb-0 Loading...
+      .row.filters.justify-content-start.mb-3.d-none
+        .col-sm-3.d-flex.align-items-center
+          label.me-2(for="filter_search") Search: 
+          input#filter_search.form-control(type="text")
+        .col-sm-3.d-flex.align-items-center.ms-auto
+          label.me-2 Type: 
+          select.form-select(name="outType" data-placeholder='Select option' data-allow-clear='true')
+            option
+            option(value="EMAIL") Email
+            option(value="SMS") Sms
+        .col-sm-3.d-flex.align-items-center
+          label.me-2 Status: 
+          select.form-select(name="documentType" data-placeholder='Select option' data-allow-clear='true')
+            option
+            option(value="CONFIRMATION") Confirmation
+            option(value="TICKET") Ticket
+            option(value="OTHER") Other
       .table-responsive-md 
         table#table_logs.table
           //- thead 
@@ -19,15 +36,53 @@ block content
           //-     th Process Time 
           //-     th &nbsp;
   #mailModal.modal.fade(tabindex='-1' aria-labelledby='mailModalLabel' aria-hidden='true')
-    .modal-dialog.modal-dialog-scrollable
+    .modal-dialog.modal-dialog-scrollable.modal-xl.modal-fullscreen-lg-down
       .modal-content
         .modal-header
           h5#mailModalLabel.modal-title
           button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
-        .modal-body
-          | ...
+        .modal-body.px-4
+          .list-info
+            dl.row.list-item
+              dt.col-sm-5.list-info-label ID
+              dd.col-sm-7.list-info-item(data-log-field='id')
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Type
+              dd.col-sm-7.list-info-item(data-log-field='outType') 
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Document Type
+              dd.col-sm-7.list-info-item(data-log-field='documentType') 
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Status
+              dd.col-sm-7.list-info-item(data-log-field='status') 
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Date
+              dd.col-sm-7.list-info-item(data-log-field='processDateTime') 
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Timezone
+              dd.col-sm-7.list-info-item(data-log-field='timeZone') 
+          .card
+            .card-body 
+              dl.row.list-item
+                dt.col-3.list-info-label From
+                dd.col-9.list-info-item(data-log-field='fromEmail' data-email-list-field='true') 
+              dl.row.list-item
+                dt.col-3.list-info-label To
+                dd.col-9.list-info-item(data-log-field='toEmail' data-email-list-field='true') 
+              dl.row.list-item
+                dt.col-3.list-info-label BCC
+                dd.col-9.list-info-item(data-log-field='bccEmail' data-email-list-field='true') 
+              dl.row.list-item
+                dt.col-3.list-info-label CC
+                dd.col-9.list-info-item(data-log-field='ccEmail' data-email-list-field='true')
+              dl.row.list-item
+                dt.col-3.list-info-label Subject
+                dd.col-9.list-info-item(data-log-field='mailSubject' data-email-list-field='true')
+              .border-bottom
+              #attachmentListContent
+              #emailContent
         .modal-footer.d-flex.justify-content-center
-          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-danger(type='button' data-bs-dismiss='modal') Close
   #smsModal.modal.fade(tabindex='-1' aria-labelledby='smsModalLabel' aria-hidden='true')
     .modal-dialog.modal-dialog-scrollable
       .modal-content
@@ -38,30 +93,33 @@ block content
           .list-info
             dl.row.list-item
               dt.col-sm-5.list-info-label ID
-              dd.col-sm-7.list-info-item(data-sms-field='id') 
+              dd.col-sm-7.list-info-item(data-log-field='id')
+            dl.row.list-item
+              dt.col-sm-5.list-info-label Type
+              dd.col-sm-7.list-info-item(data-log-field='outType') 
             dl.row.list-item
               dt.col-sm-5.list-info-label Document Type
-              dd.col-sm-7.list-info-item(data-sms-field='documentType') 
+              dd.col-sm-7.list-info-item(data-log-field='documentType') 
             dl.row.list-item
               dt.col-sm-5.list-info-label Status
-              dd.col-sm-7.list-info-item(data-sms-field='status') 
+              dd.col-sm-7.list-info-item(data-log-field='status') 
             dl.row.list-item
               dt.col-sm-5.list-info-label Date
-              dd.col-sm-7.list-info-item(data-sms-field='processDateTime') 
+              dd.col-sm-7.list-info-item(data-log-field='processDateTime') 
             dl.row.list-item
               dt.col-sm-5.list-info-label Timezone
-              dd.col-sm-7.list-info-item(data-sms-field='timeZone') 
+              dd.col-sm-7.list-info-item(data-log-field='timeZone') 
           .card
             .card-body 
               dl.row.list-item
                 dt.col-sm-7.list-info-label Mobile Country Code
-                dd.col-sm-5.list-info-item(data-sms-field='mobileCountryCode' data-sms-mobile-field='true') 
+                dd.col-sm-5.list-info-item(data-log-field='mobileCountryCode' data-sms-mobile-field='true') 
               dl.row.list-item
                 dt.col-sm-7.list-info-label Mobile Operator Code
-                dd.col-sm-5.list-info-item(data-sms-field='mobileOperatorCode' data-sms-mobile-field='true') 
+                dd.col-sm-5.list-info-item(data-log-field='mobileOperatorCode' data-sms-mobile-field='true') 
               dl.row.list-item
                 dt.col-sm-7.list-info-label Mobile Number
-                dd.col-sm-5.list-info-item(data-sms-field='mobileNumber' data-sms-mobile-field='true') 
+                dd.col-sm-5.list-info-item(data-log-field='mobileNumber' data-sms-mobile-field='true') 
               #smsContent
         .modal-footer.d-flex.justify-content-center
           button.btn.btn-danger(type='button' data-bs-dismiss='modal') Close
