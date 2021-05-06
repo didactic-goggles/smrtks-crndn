@@ -1,5 +1,5 @@
-let iti;
 const Permissions = (() => {
+  let iti;
   let datatablePermissions;
   const loadingContainer = document.querySelector('#container_loading');
   const filtersContainer = document.querySelector('.filters');
