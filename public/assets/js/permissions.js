@@ -98,6 +98,7 @@ const Permissions = (() => {
         },
         {
           targets: columns.findIndex((c) => c.field === 'Email_c'),
+          orderable: false,
           render: (data, type, row) => `
                 <div class="form-check form-switch">
                     <input data-permission-type="Email_c" class="form-check-input" type="checkbox" ${
@@ -107,6 +108,7 @@ const Permissions = (() => {
         },
         {
           targets: columns.findIndex((c) => c.field === 'Sms_c'),
+          orderable: false,
           render: (data, type, row) => `
               <div class="form-check form-switch">
                   <input data-permission-type="Sms_c" class="form-check-input" type="checkbox" ${
@@ -116,6 +118,7 @@ const Permissions = (() => {
         },
         {
           targets: columns.findIndex((c) => c.field === 'Call_c'),
+          orderable: false,
           render: (data, type, row) => `
               <div class="form-check form-switch">
                   <input data-permission-type="Call_c" class="form-check-input" type="checkbox" ${
