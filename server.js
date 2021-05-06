@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-const dotenv = require('dotenv');
 const http = require('http');
 const path = require('path');
 
@@ -8,9 +7,6 @@ process.on('uncaughtException', err => {
   console.log(err.name, err.message, err);
   process.exit(1);
 });
-
-//configuration file settings
-dotenv.config({ path: './config.env' });
 
 const app = require('./app');
 

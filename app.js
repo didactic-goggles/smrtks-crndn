@@ -77,8 +77,6 @@ app.use((req, res, next) => {
 app.use('/api', apiRouter);
 app.use('/', viewRouter);
 
-app.locals.moment = require('moment');
-
 app.use(globalErrorHandler);
 
 module.exports = app;
