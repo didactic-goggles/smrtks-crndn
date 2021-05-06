@@ -198,4 +198,10 @@ div.dataTables_wrapper div.dataTables_info {
   .select2-container--bootstrap5 .select2-selection__clear span {
     display: none;
   }
+
+  /* PHONE INPUT */
+
+  .iti {
+    width: 100%;
+  }
   

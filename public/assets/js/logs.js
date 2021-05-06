@@ -1,5 +1,4 @@
 const Logs = (() => {
-  let datatableLog;
   const loadingContainer = document.querySelector('#container_loading');
   const filtersContainer = document.querySelector('.filters');
   // MODALS
@@ -40,7 +39,7 @@ const Logs = (() => {
       },
     ];
     addHeadersToTable(logsTable, columns);
-    datatableLog = $(logsTable).DataTable({
+    const datatableLog = $(logsTable).DataTable({
       data: logs,
       responsive: true,
       columns: [

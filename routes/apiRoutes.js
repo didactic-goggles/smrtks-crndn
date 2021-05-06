@@ -9,7 +9,11 @@ const router = express.Router();
 // begin:: API
 router.get('/logs', apiController.getLogs);
 
-router.get('/permissions', apiController.getPermissions);
+router
+  .route('/permissions/:permissionId?')
+  .get(apiController.getPermissions)
+  .post(apiController.createPermision)
+  .patch(apiController.updatePermision);
 
 // end:: API
 router.get('*', viewsController.get404);
