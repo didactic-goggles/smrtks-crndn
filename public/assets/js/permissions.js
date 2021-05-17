@@ -384,7 +384,7 @@ const Permissions = (() => {
     // Search
     const searchElem = document.querySelector('#filter_search');
     searchElem.addEventListener('keyup', () =>
-      datatableLog.search(searchElem.value).draw()
+      datatablePermissions.search(searchElem.value).draw()
     );
   };
   return {
